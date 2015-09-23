@@ -28,9 +28,23 @@ func main() {
 			log.Fatal("ListenAndServer ", err)
 		}
 	}()
+
+	go timer()
+
 	log.Println("Listen http port 8080!")
 
 	select {}
+}
+
+//间隔1小时重新拉取一次数据
+func timer() {
+	timer := time.NewTicker(5 * time.Hour)
+	for {
+		select {
+		case <-timer.C:
+			go productLiHtml(nil, nil)
+		}
+	}
 }
 
 var l sync.Mutex
@@ -50,6 +64,7 @@ func count(w http.ResponseWriter, req *http.Request) {
 }
 func productLiHtml(w http.ResponseWriter, req *http.Request) {
 
+	//log.Println("----->timer test.")
 	d := ""
 
 	domain := "http://m.360changshi.com/"
@@ -136,7 +151,7 @@ func productLiHtml(w http.ResponseWriter, req *http.Request) {
 	for k, vv := range pmap {
 		//detail-sh
 		shdarray := make([]*DP, 0, 5)
-		for _, v := range shd.P {
+		for _, v := range vv.Dt.P {
 			shdp := &DP{Tt: vv.Title, Intro: vv.Dt.Intro, P: v}
 			shdarray = append(shdarray, shdp)
 		}
