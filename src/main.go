@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-var homeDir = "/home/fish"
+var homeDir = "/root"
 
 func main() {
 
